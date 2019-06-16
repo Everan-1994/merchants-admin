@@ -65,14 +65,159 @@ export default [
         ]
     },
     {
-        path: '/member',
-        name: 'member',
+        path: '/topic',
+        name: 'topic',
+        meta: {
+            icon: 'logo-buffer',
+            title: '话题管理',
+            notCache: true,
+            access: getAccess(['*',
+                'Get:/admin/topic',
+                'Get:/admin/topic/{id:[0-9]+}',
+                'Put:/admin/topic/{id:[0-9]+}',
+                'Post:/admin/topic',
+                'Delete:/admin/topic',
+                'Get:/admin/topic/{id:[0-9]+}/item',
+                'Get:/admin/topic/item/{id:[0-9]+}',
+                'Post:/admin/topic/item',
+                'Put:/admin/topic/item/{id:[0-9]+}',
+                'Delete:/admin/topic/item',
+                'Patch:/admin/topic/item/sort'
+            ]),
+        },
+        component: Main,
+        children: [
+            {
+                path: 'add-edit/:id',
+                name: 'add_edit_topic',
+                meta: {
+                    icon: 'md-flower',
+                    title: route => `${route.params.id >= 0 ? '编辑话题' : '添加话题'}`,
+                    notCache: true,
+                    hideInMenu: true,
+                    access: getAccess(["*","Get:/admin/topic/{id:[0-9]+}","Put:/admin/topic/{id:[0-9]+}","Post:/admin/topic"]),
+                    beforeCloseName: 'before_close_normal'
+                },
+                component: () => import('@/view/topic/add-edit-topic.vue')
+            },
+            {
+                path: 'list',
+                name: 'topic_list',
+                meta: {
+                    access: getAccess(["*","Get:/admin/topic","Delete:/admin/topic"]),
+                    // access: Access,
+                    icon: 'ios-bookmarks-outline',
+                    title: '话题管理',
+                    notCache: true,
+                },
+                component: () => import('@/view/topic/topic-list.vue'),
+            },
+            {
+                path: 'comment/:id',
+                name: 'comment_detail_list',
+                meta: {
+                    icon: 'md-flower',
+                    title: route => `评论列表`,
+                    notCache: true,
+                    hideInMenu: true,
+                    access: getAccess(["*","Get:/admin/topic/{topicId:[0-9]+}/item","Delete:/admin/topic/item"])
+                },
+                component: () => import('@/view/topic/topic-comment-list.vue')
+            }
+        ]
+    },
+    {
+        path: '/block',
+        name: 'block',
+        meta: {
+            icon: 'logo-buffer',
+            title: '视频模块',
+            notCache: true,
+            access: getAccess(['*', 'Get:/admin/block', 'Get:/admin/block/{id:[0-9]+}', 'Put:/admin/block/{id:[0-9]+}', 'Post:/admin/block', 'Delete:/admin/block', 'Get:/admin/block/{id:[0-9]+}/item', 'Get:/admin/block/item/{id:[0-9]+}', 'Post:/admin/block/item', 'Put:/admin/block/item/{id:[0-9]+}', 'Delete:/admin/block/item', 'Patch:/admin/block/item/sort']),
+        },
+        component: Main,
+        children: [
+            {
+                path: 'add-edit/:id',
+                name: 'add_block',
+                meta: {
+                    icon: 'md-flower',
+                    title: route => `${route.params.id >= 0 ? '编辑视频模块' : '添加视频模块'}`,
+                    notCache: true,
+                    hideInMenu: true,
+                    access: getAccess(["*","Get:/admin/block/{id:[0-9]+}","Put:/admin/block/{id:[0-9]+}","Post:/admin/block"]),
+                    beforeCloseName: 'before_close_normal'
+                },
+                component: () => import('@/view/block/add-block.vue')
+            },
+            {
+                path: 'list',
+                name: 'block_list',
+                meta: {
+                    access: getAccess(["*","Get:/admin/block","Delete:/admin/block"]),
+                    // access: Access,
+                    icon: 'md-albums',
+                    title: '视频管理',
+                    notCache: true,
+                },
+                component: () => import('@/view/block/block-list'),
+            },
+            {
+                path: 'list/:id',
+                name: 'block_detail_list',
+                meta: {
+                    icon: 'md-flower',
+                    title: route => `视频模块管理`,
+                    notCache: true,
+                    hideInMenu: true,
+                    access: getAccess(["*","Get:/admin/block/{blockId:[0-9]+}/item","Delete:/admin/block/item","Patch:/admin/block/item/sort"])
+                },
+                component: () => import('@/view/block/block-detail-list.vue')
+            },
+            {
+                path: 'list/:id/add-edit/:itemId',
+                name: 'block_detail',
+                meta: {
+                    icon: 'md-flower',
+                    title: route => `${route.query.itemId  ? '编辑视频模块' : '添加视频模块'}`,
+                    notCache: true,
+                    hideInMenu: true,
+                    access: getAccess(["*","Get:/admin/block/item/{id:[0-9]+}","Post:/admin/block/item","Put:/admin/block/item/{id:[0-9]+}"]),
+                    beforeCloseName: 'before_close_normal'
+                },
+                component: () => import('@/view/block/block-detail.vue')
+            }
+        ]
+    },
+    {
+        path: '/system',
+        name: 'system',
         meta: {
             icon: 'md-contacts',
-            title: '成员管理',
+            title: '系统管理',
             notCache: true,
             // access: Access
-            access: getAccess(['*', 'Get:/admin/members', 'Post:/admin/members', 'Delete:/admin/members', 'Get:/admin/members/{id}', 'Put:/admin/members', 'Patch:/admin/members'])
+            access: getAccess([
+                '*',
+                'Get:/admin/members',
+                'Post:/admin/members',
+                'Delete:/admin/members',
+                'Get:/admin/members/{id}',
+                'Put:/admin/members',
+                'Patch:/admin/members',
+                'Get:/admin/operation',
+                'Get:/admin/roles',
+                'Post:/admin/roles',
+                'Delete:/admin/roles',
+                'Get:/admin/roles/{id:[0-9]+}',
+                'Put:/admin/roles',
+                'Get:/admin/actions',
+                'Post:/admin/actions',
+                'Delete:/admin/actions',
+                'Post:/admin/actions/route',
+                'Put:/admin/actions',
+                'Patch:/admin/actions/sort'
+            ])
         },
         component: Main,
         children: [
@@ -82,13 +227,12 @@ export default [
                 meta: {
                     // access: Access,
                     icon: 'md-contact',
-                    title: '成员列表',
+                    title: '管理员列表',
                     notCache: true,
                     access: getAccess(['*', 'Get:/admin/members', 'Delete:/admin/members', 'Patch:/admin/members'])
                 },
                 component: () => import('@/view/member/member-list')
             },
-
             {
                 path: 'member-add',
                 name: 'member-add',
@@ -156,83 +300,6 @@ export default [
                 },
                 component: () => import('@/view/member/role-add-edit')
             },
-        ]
-    },
-    {
-        path: '/block',
-        name: 'block',
-        meta: {
-            icon: 'logo-buffer',
-            title: '区块管理',
-            notCache: true,
-            access: getAccess(['*', 'Get:/admin/block', 'Get:/admin/block/{id:[0-9]+}', 'Put:/admin/block/{id:[0-9]+}', 'Post:/admin/block', 'Delete:/admin/block', 'Get:/admin/block/{id:[0-9]+}/item', 'Get:/admin/block/item/{id:[0-9]+}', 'Post:/admin/block/item', 'Put:/admin/block/item/{id:[0-9]+}', 'Delete:/admin/block/item', 'Patch:/admin/block/item/sort']),
-        },
-        component: Main,
-        children: [
-            {
-                path: 'add-edit/:id',
-                name: 'add_block',
-                meta: {
-                    icon: 'md-flower',
-                    title: route => `${route.params.id >= 0 ? '编辑区块' : '添加区块'}`,
-                    notCache: true,
-                    hideInMenu: true,
-                    access: getAccess(["*","Get:/admin/block/{id:[0-9]+}","Put:/admin/block/{id:[0-9]+}","Post:/admin/block"]),
-                    beforeCloseName: 'before_close_normal'
-                },
-                component: () => import('@/view/block/add-block.vue')
-            },
-            {
-                path: 'list',
-                name: 'block_list',
-                meta: {
-                    access: getAccess(["*","Get:/admin/block","Delete:/admin/block"]),
-                    // access: Access,
-                    icon: 'md-albums',
-                    title: '区块列表',
-                    notCache: true,
-                },
-                component: () => import('@/view/block/block-list'),
-            },
-            {
-                path: 'list/:id',
-                name: 'block_detail_list',
-                meta: {
-                    icon: 'md-flower',
-                    title: route => `区块内容管理`,
-                    notCache: true,
-                    hideInMenu: true,
-                    access: getAccess(["*","Get:/admin/block/{blockId:[0-9]+}/item","Delete:/admin/block/item","Patch:/admin/block/item/sort"])
-                },
-                component: () => import('@/view/block/block-detail-list.vue')
-            },
-            {
-                path: 'list/:id/add-edit/:itemId',
-                name: 'block_detail',
-                meta: {
-                    icon: 'md-flower',
-                    title: route => `${route.query.itemId  ? '编辑区块内容' : '添加区块内容'}`,
-                    notCache: true,
-                    hideInMenu: true,
-                    access: getAccess(["*","Get:/admin/block/item/{id:[0-9]+}","Post:/admin/block/item","Put:/admin/block/item/{id:[0-9]+}"]),
-                    beforeCloseName: 'before_close_normal'
-                },
-                component: () => import('@/view/block/block-detail.vue')
-            }
-        ]
-    },
-    {
-        path: '/permission',
-        name: 'permission',
-        meta: {
-            icon: 'ios-medal',
-            title: '权限管理',
-            notCache: true,
-            // access: Access
-            access: getAccess(['*', 'Get:/admin/actions', 'Post:/admin/actions', 'Delete:/admin/actions', 'Post:/admin/actions/route', 'Put:/admin/actions', 'Patch:/admin/actions/sort'])
-        },
-        component: Main,
-        children: [
             {
                 path: 'list',
                 name: 'permission-list',
@@ -245,7 +312,6 @@ export default [
                 },
                 component: () => import('@/view/permission/list')
             },
-
             {
                 path: 'add',
                 name: 'permission-add',
@@ -259,19 +325,6 @@ export default [
                 },
                 component: () => import('@/view/permission/add')
             },
-        ]
-    },
-    {
-        path: '/operation',
-        name: 'operation',
-        meta: {
-            icon: 'ios-paper',
-            title: '日志管理',
-            notCache: true,
-            access: getAccess(['*', 'Get:/admin/operation']),
-        },
-        component: Main,
-        children: [
             {
                 path: 'log',
                 name: 'operation_list',

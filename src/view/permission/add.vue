@@ -46,7 +46,7 @@
                 </FormItem>
                 <FormItem>
                     <Button type="success"  @click="submitForm">保 存</Button>
-                    <Button type="text" to="/permission/list" >返回权限列表</Button>
+                    <Button type="text" to="/system/list" >返回权限列表</Button>
                 </FormItem>
             </Form>
         </Card>

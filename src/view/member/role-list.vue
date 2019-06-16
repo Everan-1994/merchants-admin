@@ -4,7 +4,7 @@
             <Row>
                 <Col span="24" style="margin-bottom: 15px;">
                     <Button type="primary" icon="md-add" @click="addOrEditRole(0)" v-if="addAccess"
-                            to="/member/role-add/0">
+                            to="/system/role-add/0">
                         添加角色
                     </Button>
                 </Col>
@@ -85,7 +85,7 @@ export default {
                   marginRight: '5px'
                 },
                 props: {
-                  to: '/member/role-edit/' + params.row.id,
+                  to: '/system/role-edit/' + params.row.id,
                   type: 'primary',
                   size: 'small',
                   placement: 'top'

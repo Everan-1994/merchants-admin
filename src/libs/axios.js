@@ -53,7 +53,7 @@ class HttpRequest {
         // 如果 header 中存在 token，那么就替换本地的 token
         setToken(token)
       }
-      if (res.data.errorCode == 400) {
+      if (res.data.errorCode == 401) {
         Modal.confirm({
           title: '提示',
           content: '身份已过期，请重新登录',

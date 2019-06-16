@@ -3,7 +3,7 @@
         <Card>
             <Row>
                 <Col span="24">
-                    <Button type="primary" icon="md-add" @click="addPermission" to="/permission/add" v-if="addAccess">添加权限</Button>
+                    <Button type="primary" icon="md-add" @click="addPermission" to="/system/add" v-if="addAccess">添加权限</Button>
                     <Divider v-if="addAccess"/>
                 </Col>
             </Row>

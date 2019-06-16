@@ -42,9 +42,10 @@ export const blockListDetail = (id) => {
 }
 
 // 查询区块内容列表
-export const blockListItem = (id) => {
+export const blockListItem = (id, params) => {
     return axios.request({
         url: 'block/' + id + '/item',
+        params,
         method: 'get'
     })
 }

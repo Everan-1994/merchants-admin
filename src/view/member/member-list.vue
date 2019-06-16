@@ -4,7 +4,7 @@
             <Row>
                 <Col span="24" style="margin-bottom: 15px;">
                     <Button type="primary" icon="md-add" @click="addOrEditMember" v-if="addAccess"
-                            to="/member/member-add">
+                            to="/system/member-add">
                         添加成员
                     </Button>
                 </Col>
@@ -73,26 +73,29 @@
                         align: 'center',
                         width: 100,
                         render: (h, params) => {
-                            if (this.release) {
-                                return h('i-switch', {
-                                    props: {
-                                        size: 'small',
-                                        value: !!params.row.isEnable
-                                    },
-                                    scopedSlots: {
-                                        open: () => h('span'),
-                                        close: () => h('span')
-                                    },
-                                    on: {
-                                        'on-change': (value) => {
-                                            this.changeStatus(params.row.id, value)
+                            if (params.row.id > 1) {
+                                if (this.release) {
+                                    return h('i-switch', {
+                                        props: {
+                                            size: 'small',
+                                            value: !!params.row.isEnable
+                                        },
+                                        scopedSlots: {
+                                            open: () => h('span'),
+                                            close: () => h('span')
+                                        },
+                                        on: {
+                                            'on-change': (value) => {
+                                                this.changeStatus(params.row.id, value)
+                                            }
                                         }
-                                    }
-                                })
+                                    })
+                                } else {
+                                    return h('div', {}, params.row.isEnable ? '启用' : '不启用')
+                                }
                             } else {
-                                return h('div', {}, params.row.isEnable ? '启用' : '不启用')
+                                return h('span', {}, '--')
                             }
-
                         }
                     },
                     {
@@ -118,7 +121,7 @@
                                         marginRight: '5px'
                                     },
                                     props: {
-                                        to: '/member/member-edit/' + params.row.id,
+                                        to: '/system/member-edit/' + params.row.id,
                                         type: 'primary',
                                         size: 'small',
                                         placement: 'top',

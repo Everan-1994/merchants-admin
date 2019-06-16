@@ -72,7 +72,7 @@
 
                 <FormItem style="margin-top: 30px;">
                     <Button type="success"  @click="submitForm">保 存</Button>
-                    <Button type="text" to="/member/role-list" >返回角色列表</Button>
+                    <Button type="text" to="/system/role-list" >返回角色列表</Button>
                 </FormItem>
             </Form>
         </Card>

@@ -39,7 +39,7 @@
                     </i-switch>
                 </FormItem>
                 <Button type="success"  @click="submitForm">保 存</Button>
-                <Button type="text" to="/member/member-list" >返回成员列表</Button>
+                <Button type="text" to="/system/member-list" >返回成员列表</Button>
             </Form>
         </Card>
     </div>

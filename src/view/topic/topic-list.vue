@@ -1,5 +1,4 @@
 <style>
-
     .marginTop {
         margin-top: 20px;
     }
@@ -7,16 +6,13 @@
     .mleft {
         margin-left: 10px;
     }
-
 </style>
 <template>
     <div>
         <Card>
-            <!--<h4>区块内容管理</h4>-->
-            <!--<Divider/>-->
             <Row class="marginTop" style="margin-bottom: 10px">
                 <Col span="4">
-                    <Button type="primary" @click="addBlock" v-if="addAccess" v-bind:to="toUrl">添加视频内容</Button>
+                    <Button type="primary" @click="addTopic" v-if="addAccess" to="/topic/add-edit/-1">添加话题</Button>
                 </Col>
                 <Col span="20" style="margin-bottom: 15px;">
                     <span style="">
@@ -28,14 +24,12 @@
                     </span>
                 </Col>
             </Row>
-
-            <Table ref="dragable" :columns="columns1" :data="list" :loading="loading"
+            <Table ref="topics" :columns="columns" :data="list" :loading="loading"
                    @on-selection-change="selctChange"></Table>
             <Row class="marginTop">
                 <Col span="6">
                     <div style="padding-bottom: 1px; overflow: hidden;">
                         <Button type="error" @click="deleteProduct" v-if="viewAccessAll">删除</Button>
-                        <Button type="text" to="/block/list">返回视频模块列表</Button>
                     </div>
                 </Col>
                 <Col span="18" v-show="showPage">
@@ -60,13 +54,13 @@
     </div>
 </template>
 <script type="text/ecmascript-6">
-    import {blockListItem, removeBlockListItem, sortBlockListItem} from '@/api/block'
-    import {getLocalStorage} from '@/libs/util'
     import {hasOneOf} from '@/libs/tools'
+    import {topickList, removeTopic, sortTopicListItem} from '@/api/topic'
+    import {getLocalStorage} from '@/libs/util'
     import sortPoptip from '@/view/components/sortPoptip'
 
     export default {
-        name: 'block_detail_list',
+        name: 'topic_list',
         components: {
             sortPoptip
         },
@@ -81,29 +75,30 @@
                 showPage: false,
                 title: '',
                 fdate: '',
-                toUrl: '',
-                list: [],
                 loading: true,
-                columns1: [
+                changeAccess: true,
+                editAccessL: true,
+                columns: [
                     {
                         type: 'selection',
                         width: 60,
                         align: 'center'
                     },
                     {
-                        title: '视频标题',
+                        title: '话题标题',
                         key: 'title',
                         render: (h, params) => {
                             if ((new Date().getTime() - new Date(params.row.createdAt).getTime()) <= 300000) {
                                 return h('span', [
                                     params.row.title,
-                                    h('span', {
+                                    h('tag', {
                                         style: {
-                                            padding: '3px',
-                                            marginLeft: '5px',
+                                            marginLeft: '10px',
                                             fontWeight: 'bold',
-                                            color: '#fff',
-                                            backgroundColor: '#009b00'
+                                            color: '#fff'
+                                        },
+                                        props: {
+                                            color: '#009b00'
                                         }
                                     }, 'NEW')
                                 ])
@@ -115,42 +110,13 @@
                         }
                     },
                     {
-                        title: '视频',
-                        key: 'video',
-                        width: 270,
-                        render: (h, params) => {
-                            return h('video', {
-                                style: {
-                                    maxWidth: '250px',
-                                    maxHeight: '150px',
-                                    margin: '5px 0'
-                                },
-                                attrs: {
-                                    src: params.row.video,
-                                    controls: 'controls'
-                                }
-                            })
-                        }
-                    },
-                    {
-                        title: '观看人数',
-                        key: 'watch_times',
+                        title: '发布时间',
+                        key: 'created_at',
                         align: 'center',
                         width: 180,
                         render: (h, params) => {
                             return h('span', [
-                                params.row.watch_times
-                            ])
-                        }
-                    },
-                    {
-                        title: '发布时间',
-                        width: 200,
-                        key: 'createAt',
-                        align: 'center',
-                        render: (h, params) => {
-                            return h('span', [
-                                params.row.createdAt
+                                params.row.created_at
                             ])
                         }
                     },
@@ -163,65 +129,100 @@
                             return h('div', [
                                 h('Button', {
                                     props: {
-                                        to: '/block/list/' + params.row.blockId + '/add-edit/' + params.row.id,
+                                        to: '/topic/add-edit/' + params.row.id,
                                         type: 'primary',
                                         size: 'small'
                                     },
                                     style: {
                                         marginRight: '5px',
-                                        display: this.editAccessL ? 'inline-block' : 'none'
+                                        display: this.editAccessL ? 'inline-block;' : 'none'
                                     },
                                     on: {
                                         click: () => {
-                                            this.editBlock(params.row.blockId, params.row.id)
+                                            this.editTopic(params.row.id)
                                         }
                                     }
                                 }, '编辑'),
+                                h('Button', {
+                                    props: {
+                                        to: '/topic/comment/' + params.row.id,
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px',
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.ManagementBlock(params.row.id)
+                                        }
+                                    }
+                                }, '评论详情'),
                                 h(sortPoptip, {
                                     props: {
                                         sortObj: {
                                             current: {
                                                 'id': params.row.id,
-                                                'sort': params.row.sort,
-                                                'parentId': params.row.blockId
+                                                'sort': params.row.sort
                                             }
                                         },
-                                        sortFunc: sortBlockListItem
+                                        sortFunc: sortTopicListItem
                                     },
                                     style: {
                                         display: this.sortAccessL ? 'inline-block' : 'none'
                                     },
                                     on: {
                                         sortUpdated: () => {
-                                            this.setBlockList(this.$route.params.id)
+                                            this.setTopicList()
                                         }
                                     }
-                                },
-                                '排序')
+                                }, '排序')
                             ])
                         }
                     }
                 ],
+                list: [],
+                isShow: false,
                 selectArr: [],
-                editAccessL: true,
-                sortAccessL: true,
-                operation: true
+                sortAccessL: true
             }
         },
-        created() {
-            let id = this.$route.params.id
-            this.toUrl = '/block/list/' + id + '/add-edit/0'
-            this.setBlockList(id)
-            this.editAccess()
-            this.sortAccess()
-            if (!this.sortAccess() && !this.editAccess()) {
-                this.columns1.pop()
+        computed: {
+            // 删除权限限制
+            viewAccessAll() {
+                this.changeAccess = getLocalStorage('access').split(',')
+                const item = ['Delete:/admin/topic']
+                const arr = ['*']
+                if (this.changeAccess.toString() === arr.toString()) {
+                    return true
+                } else {
+                    if (!hasOneOf(item, this.changeAccess)) {
+                        this.columns[0].type = 'html'
+                    }
+                    return hasOneOf(item, this.changeAccess)
+                }
+            },
+            // 添加权限限制
+            addAccess() {
+                const addAccess = getLocalStorage('access').split(',')
+                const item = ['Post:/admin/topic']
+                const arr = ['*']
+                if (addAccess.toString() === arr.toString()) {
+                    return true
+                } else {
+                    return hasOneOf(item, addAccess)
+                }
             }
+
+        },
+        created() {
+            this.setTopicList()
+            this.editAccess()
         },
         methods: {
             editAccess() {
                 const addAccess = getLocalStorage('access').split(',')
-                const item = ['Put:/admin/block/item/{id:[0-9]+}']
+                const item = ['Put:/admin/block/{id:[0-9]+}']
                 const arr = ['*']
                 if (addAccess.toString() === arr.toString()) {
                     return true
@@ -230,16 +231,29 @@
                     return hasOneOf(item, addAccess)
                 }
             },
-            sortAccess() {
-                const addAccess = getLocalStorage('access').split(',')
-                const item = ['Patch:/admin/block/item/sort']
-                const arr = ['*']
-                if (addAccess.toString() === arr.toString()) {
-                    return true
-                } else {
-                    this.sortAccessL = hasOneOf(item, addAccess)
-                    return hasOneOf(item, addAccess)
+            setTopicList: function () {
+                var _this = this
+                const params = {
+                    title: _this.title,
+                    page: _this.page,
+                    pageSize: _this.pageSize,
+                    startTime: _this.fdate && _this.fdate[0] ? Date.parse(_this.fdate[0]) / 1000 : 0,
+                    endTime: _this.fdate && _this.fdate[1] ? Date.parse(_this.fdate[1]) / 1000 : 0
                 }
+
+                topickList(params).then(function (res) {
+                    if (res.data.errorCode === 0) {
+                        const data = res.data.data
+                        _this.list = data.data
+                        _this.total = data.total
+                        _this.showPage = data.total > _this.pageSize
+                        _this.loading = false
+                    } else {
+                        _this.$Message.info(res.data.messages || '数据渲染失败')
+                    }
+                }).catch(function (err) {
+                    _this.$Message.info(err.data.messages || '接口获取失败')
+                })
             },
             selctChange: function (selection) {
                 const arr = []
@@ -248,13 +262,13 @@
                 }
                 this.selectArr = arr
             },
-            // 删除
             deleteProduct: function () {
                 var _this = this
-                const list = _this.$refs.dragable.getSelection()
+
+                const list = _this.$refs.topics.getSelection()
 
                 if (list.length === 0) {
-                    this.$Message.error('请勾选要删除的视频')
+                    this.$Message.error('请勾选要删除的话题')
                     return false
                 }
 
@@ -264,140 +278,83 @@
                     onOk: () => {
                         const ids = {}
                         ids.ids = _this.selectArr
-                        removeBlockListItem(ids).then(function (res) {
+                        removeTopic(ids).then(function (res) {
                             if (res.data.errorCode === 0) {
                                 let arr = _this.list.filter(item => !_this.selectArr.some(ele => ele === item.id))
                                 _this.list = arr
                                 _this.$Message.info('删除成功')
                             } else {
-                                _this.$Message.info('删除失败')
+                                _this.$Message.info(res.data.messages || '删除失败')
                             }
                         }).catch(function (err) {
-                            _this.$Message.info('接口获取失败')
+                            _this.$Message.info(err.data.messages || '接口获取失败')
                         })
                     },
                     onCancel: () => {
                         this.$Message.info('取消删除')
                     }
+
                 })
             },
-            // 渲染区块列表
-            setBlockList: function (id) {
-                var _this = this
-                let query = {
-                    title: _this.title,
-                    startTime: this.fdate && this.fdate[0] ? Date.parse(this.fdate[0]) / 1000 : 0,
-                    endTime: this.fdate && this.fdate[1] ? Date.parse(this.fdate[1]) / 1000 : 0
-                }
-                blockListItem(id, query).then(function (res) {
-                    if (res.data.errorCode === 0) {
-                        const data = res.data.data
-                        _this.list = data.data
-                        _this.total = data.meta.total
-                        _this.showPage = data.meta.total > _this.pageSize
-                        _this.loading = false
-                    } else {
-                        _this.$Message.info('数据渲染失败')
-                    }
-                }).catch(function (err) {
-                    _this.$Message.info('接口获取失败')
-                })
-            },
-            // 编辑
-            editBlock: function (id, itemId) {
+            ManagementBlock: function (id) {
                 const route = {
-                    name: 'block_detail',
-                    query: {
-                        id: id,
-                        itemId: itemId
+                    name: 'comment_detail_list',
+                    params: {
+                        id
                     },
                     meta: {
-                        title: `编辑区块内容`
+                        title: `话题评论管理`
                     }
                 }
                 this.$router.push(route)
             },
-            // 添加
-            addBlock: function () {
-                let id = this.$route.params.id
-                let blockId = this.$route.params.id
+            editTopic: function (id) {
                 const route = {
-                    name: 'block_detail',
-                    query: {
-                        id: blockId
+                    name: 'add_block',
+                    params: {
+                        id
                     },
                     meta: {
-                        title: `添加区块内容`
+                        title: `${id >= 0 ? '编辑话题' : '添加话题'}`
+                    }
+                }
+                this.$router.push(route)
+            },
+            addTopic: function () {
+                let id = -1
+                const route = {
+                    name: 'add_block',
+                    params: {
+                        id
+                    },
+                    meta: {
+                        title: `${id >= 0 ? '编辑话题' : '添加话题'}`
                     }
                 }
                 this.$router.push(route)
             },
             changePage(value) {
-                let id = this.$route.params.id
                 this.loading = true
                 this.page = value
-                this.setBlockList(id)
+                this.setTopicList()
             },
             changePageSize(value) {
-                let id = this.$route.params.id
                 this.loading = true
                 this.pageSize = value
-                this.setBlockList(id)
+                this.setTopicList()
             },
             query() {
-                let id = this.$route.params.id
                 this.loading = true
                 this.page = 1
-                this.setBlockList(id)
+                this.setTopicList()
             },
             resetQuery() {
-                let id = this.$route.params.id
                 this.loading = true
                 this.page = 1
                 this.title = ''
                 this.fdate = ''
-                this.setBlockList(id)
+                this.setTopicList()
             }
         },
-        computed: {
-            // 监听路由传递的id
-            changId() {
-                return this.$route.params.id
-            },
-            // 删除权限限制
-            viewAccessAll() {
-                const changeAccess = getLocalStorage('access').split(',')
-                const item = ['Delete:/admin/block/item']
-                const arr = ['*']
-                if (changeAccess.toString() === arr.toString()) {
-                    return true
-                } else {
-                    if (!hasOneOf(item, changeAccess)) {
-                        this.columns1[0].type = 'html'
-                    }
-                    return hasOneOf(item, changeAccess)
-                }
-            },
-            addAccess() {
-                const changeAccess = getLocalStorage('access').split(',')
-                const item = ['Post:/admin/block/item']
-                const arr = ['*']
-                if (changeAccess.toString() === arr.toString()) {
-                    return true
-                } else {
-                    return hasOneOf(item, changeAccess)
-                }
-            }
-        },
-        watch: {
-            changId: {
-                // 监听路由传递的id 根据不同的id值初始化渲染页面
-                handler(val, oldVal) {
-                    var _this = this
-                    this.setBlockList(val)
-                },
-                deep: false
-            }
-        }
     }
 </script>
