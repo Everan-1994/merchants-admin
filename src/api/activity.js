@@ -72,18 +72,18 @@ export const removeSignList = (data) => {
 
 // 报告列表
 export const reportList = (id, params) => {
-    return axios.request({
-        url: 'activity/' + id + '/report',
-        params,
-        method: 'get'
-    })
+  return axios.request({
+    url: 'activity/' + id + '/report',
+    params,
+    method: 'get'
+  })
 }
 
 // 删除报告
 export const removeReportList = (data) => {
-    return axios.request({
-        url: 'activity/report',
-        data,
-        method: 'delete'
-    })
+  return axios.request({
+    url: 'activity/report',
+    data,
+    method: 'delete'
+  })
 }

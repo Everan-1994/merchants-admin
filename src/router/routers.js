@@ -65,6 +65,61 @@ export default [
         ]
     },
     {
+        path: '/check_in',
+        name: 'check_in',
+        meta: {
+            icon: 'ios-bookmarks',
+            title: '签到管理',
+            // access: Access,
+            access: getAccess([
+                '*',
+                'Post:/admin/prizes',
+                'Delete:/admin/prizes',
+                'Get:/admin/prizes/{id}',
+                'Get:/admin/prizes',
+                'Put:/admin/prizes/{id}'
+            ]),
+        },
+        component: Main,
+        children: [
+            {
+                path: 'add-edit/:id',
+                name: 'add_edit_prize',
+                meta: {
+                    icon: 'md-flower',
+                    title: route => `${route.params.id >= 0 ? '编辑奖品' : '添加奖品'}`,
+                    // access: Access,
+                    hideInMenu: true,
+                    access: getAccess(['*', 'Get:/admin/prizes/{id}', 'Put:/admin/prizes']),
+                    beforeCloseName: 'before_close_normal'
+                },
+                component: () => import('@/view/check-in/add-edit-prize')
+            },
+            {
+                path: 'list',
+                name: 'prize_list',
+                meta: {
+                    access: getAccess(['*', 'Get:/admin/prizes', 'Delete:/admin/prizes']),
+                    icon: 'md-list-box',
+                    title: '奖品列表',
+                    notCache: true
+                },
+                component: () => import('@/view/check-in/prize-list')
+            },
+            {
+                path: 'check-in-rule',
+                name: 'check_in_rule',
+                meta: {
+                    icon: 'ios-leaf',
+                    title: '签到规则',
+                    notCache: true,
+                    access: getAccess(['*', 'Get:/admin/other/{id}']),
+                },
+                component: () => import('@/view/check-in/rule-detail.vue')
+            },
+        ]
+    },
+    {
         path: '/activity',
         name: 'activity',
         meta: {

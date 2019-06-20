@@ -45,7 +45,7 @@ import Fullscreen from './components/fullscreen'
 // import Language from './components/language'
 import {mapMutations, mapActions} from 'vuex'
 import {getNewTagList, getNextRoute, routeEqual, getLocalStorage} from '@/libs/util'
-import minLogo from '@/assets/images/logo-min.png'
+import minLogo from '@/assets/images/logo-min.jpg'
 import maxLogo from '@/assets/images/daq.png'
 import './main.less'
 
