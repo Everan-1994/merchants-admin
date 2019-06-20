@@ -65,6 +65,156 @@ export default [
         ]
     },
     {
+        path: '/activity',
+        name: 'activity',
+        meta: {
+            icon: 'logo-buffer',
+            title: '活动管理',
+            notCache: true,
+            access: getAccess(['*',
+                'Get:/admin/activity',
+                'Get:/admin/activity/{id:[0-9]+}',
+                'Put:/admin/activity/{id:[0-9]+}',
+                'Post:/admin/activity',
+                'Delete:/admin/activity',
+                'Get:/admin/activity/{id:[0-9]+}/item',
+                'Get:/admin/activity/item/{id:[0-9]+}',
+                'Post:/admin/activity/item',
+                'Put:/admin/activity/item/{id:[0-9]+}',
+                'Delete:/admin/activity/item',
+                'Patch:/admin/activity/item/sort'
+            ]),
+        },
+        component: Main,
+        children: [
+            {
+                path: 'add-edit/:id',
+                name: 'add_edit_activity',
+                meta: {
+                    icon: 'md-flower',
+                    title: route => `${route.params.id >= 0 ? '编辑活动' : '添加活动'}`,
+                    notCache: true,
+                    hideInMenu: true,
+                    access: getAccess(["*","Get:/admin/activity/{id:[0-9]+}","Put:/admin/activity/{id:[0-9]+}","Post:/admin/activity"]),
+                    beforeCloseName: 'before_close_normal'
+                },
+                component: () => import('@/view/activity/add-edit-activity.vue')
+            },
+            {
+                path: 'list',
+                name: 'activity_list',
+                meta: {
+                    access: getAccess(["*","Get:/admin/activity","Delete:/admin/activity"]),
+                    // access: Access,
+                    icon: 'md-images',
+                    title: '活动管理',
+                    notCache: true,
+                },
+                component: () => import('@/view/activity/activity-list.vue'),
+            },
+            {
+                path: 'sign_list/:id',
+                name: 'activity_sign_list',
+                meta: {
+                    icon: 'md-flower',
+                    title: route => `报名列表`,
+                    notCache: true,
+                    hideInMenu: true,
+                    access: getAccess(["*","Get:/admin/activity/{activityId:[0-9]+}/sign","Delete:/admin/activity/sign"])
+                },
+                component: () => import('@/view/activity/activity-sign-list.vue')
+            },
+
+            {
+                path: 'report_list/:id',
+                name: 'activity_report_list',
+                meta: {
+                    icon: 'md-flower',
+                    title: route => `报告列表`,
+                    notCache: true,
+                    hideInMenu: true,
+                    access: getAccess(["*","Get:/admin/activity/{activityId:[0-9]+}/report","Delete:/admin/activity/report"])
+                },
+                component: () => import('@/view/activity/activity-report-list.vue')
+            }
+        ]
+    },
+    {
+        path: '/try_use',
+        name: 'try_use',
+        meta: {
+            icon: 'logo-buffer',
+            title: '试用管理',
+            notCache: true,
+            access: getAccess(['*',
+                'Get:/admin/try_use',
+                'Get:/admin/try_use/{id:[0-9]+}',
+                'Put:/admin/try_use/{id:[0-9]+}',
+                'Post:/admin/try_use',
+                'Delete:/admin/try_use',
+                'Get:/admin/try_use/{id:[0-9]+}/item',
+                'Get:/admin/try_use/item/{id:[0-9]+}',
+                'Post:/admin/try_use/item',
+                'Put:/admin/try_use/item/{id:[0-9]+}',
+                'Delete:/admin/try_use/item',
+                'Patch:/admin/try_use/item/sort'
+            ]),
+        },
+        component: Main,
+        children: [
+            {
+                path: 'add-edit/:id',
+                name: 'add_edit_try_use',
+                meta: {
+                    icon: 'md-flower',
+                    title: route => `${route.params.id >= 0 ? '编辑试用' : '添加试用'}`,
+                    notCache: true,
+                    hideInMenu: true,
+                    access: getAccess(["*","Get:/admin/try_use/{id:[0-9]+}","Put:/admin/try_use/{id:[0-9]+}","Post:/admin/try_use"]),
+                    beforeCloseName: 'before_close_normal'
+                },
+                component: () => import('@/view/try-use/add-edit-try-use.vue')
+            },
+            {
+                path: 'list',
+                name: 'try_use_list',
+                meta: {
+                    access: getAccess(["*","Get:/admin/try_use","Delete:/admin/try_use"]),
+                    // access: Access,
+                    icon: 'md-basket',
+                    title: '试用管理',
+                    notCache: true,
+                },
+                component: () => import('@/view/try-use/try-use-list.vue'),
+            },
+            {
+                path: 'sign_list/:id',
+                name: 'try_use_sign_list',
+                meta: {
+                    icon: 'md-flower',
+                    title: route => `报名列表`,
+                    notCache: true,
+                    hideInMenu: true,
+                    access: getAccess(["*","Get:/admin/try_use/{tryUseId:[0-9]+}/sign","Delete:/admin/try_use/sign"])
+                },
+                component: () => import('@/view/try-use/try-use-sign-list.vue')
+            },
+
+            {
+                path: 'report_list/:id',
+                name: 'try_use_report_list',
+                meta: {
+                    icon: 'md-flower',
+                    title: route => `报告列表`,
+                    notCache: true,
+                    hideInMenu: true,
+                    access: getAccess(["*","Get:/admin/try_use/{tryUseId:[0-9]+}/report","Delete:/admin/try_use/report"])
+                },
+                component: () => import('@/view/try-use/try-use-report-list.vue')
+            }
+        ]
+    },
+    {
         path: '/topic',
         name: 'topic',
         meta: {
@@ -106,7 +256,7 @@ export default [
                 meta: {
                     access: getAccess(["*","Get:/admin/topic","Delete:/admin/topic"]),
                     // access: Access,
-                    icon: 'ios-bookmarks-outline',
+                    icon: 'md-bookmarks',
                     title: '话题管理',
                     notCache: true,
                 },
@@ -156,7 +306,7 @@ export default [
                 meta: {
                     access: getAccess(["*","Get:/admin/block","Delete:/admin/block"]),
                     // access: Access,
-                    icon: 'md-albums',
+                    icon: 'logo-youtube',
                     title: '视频管理',
                     notCache: true,
                 },
@@ -193,7 +343,7 @@ export default [
         path: '/system',
         name: 'system',
         meta: {
-            icon: 'md-contacts',
+            icon: 'md-cog',
             title: '系统管理',
             notCache: true,
             // access: Access

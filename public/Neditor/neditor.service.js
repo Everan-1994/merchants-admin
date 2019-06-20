@@ -10,9 +10,9 @@ UE.Editor.prototype.getActionUrl = function (action) {
   /* 按config中的xxxActionName返回对应的接口地址 */
 
   if (action == 'uploadimage' || action == 'uploadscrawl') {
-    return 'http://std.wei/admin/upload'
+    return 'http://merchants.wei/admin/upload'
   } else if (action == 'uploadvideo') {
-    return 'http://std.wei/admin/upload'
+    return 'http://merchants.wei/admin/upload'
   } else {
     return this._bkGetActionUrl.call(this, action)
   }
