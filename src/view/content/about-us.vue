@@ -11,8 +11,9 @@
     <div>
         <Card :title="title">
             <Form ref="formItem" :model="formItem" :label-width="80" @submit.native.prevent :rules="validateRules">
-                <FormItem label="签到规则" prop="content">
-                    <Input v-model="formItem.content" type="textarea" :rows="10"></Input>
+                <FormItem label="联系我们" prop="body">
+                    <NEditor ref="editor" @on-change="getContent"></NEditor>
+                    <Input v-model="formItem.body" type="text" style="display: none;"></Input>
                 </FormItem>
                 <Button type="success" @click="submitForm">保 存</Button>
             </Form>
@@ -22,18 +23,22 @@
 
 <script>
     import {getDetail, update} from '@/api/other'
+    import NEditor from '@/components/neditor/index'
 
     export default {
-        name: 'check_in_rule',
+        name: 'about_us',
+        components: {
+            NEditor
+        },
         data() {
             return {
-                title: '签到规则',
+                title: '联系我们',
                 formItem: {
-                    content: ''
+                    body: ''
                 },
                 validateRules: {
-                    content: [
-                        {required: true, message: '请填写签到规则', trigger: 'blur'}
+                    body: [
+                        {required: true, message: '请填写内容', trigger: 'blur'}
                     ]
                 }
             }
@@ -42,7 +47,7 @@
             submitForm() {
                 this.$refs.formItem.validate((valid) => {
                     if (valid) {
-                        update(this.formItem, 1).then(res => {
+                        update(this.formItem, 2).then(res => {
                             const data = res.data
                             if (data.errorCode === 0) {
                                 this.$Message.success('保存成功')
@@ -55,12 +60,16 @@
             },
             getDetail(id) {
                 getDetail(id).then(res => {
-                    this.formItem.content = res.data.data.content
+                    this.$refs.editor.setHtml(res.data.data.body)
+                    this.formItem.body = res.data.data.body
                 })
-            }
+            },
+            getContent(html) {
+                this.formItem.body = html
+            },
         },
         created() {
-            this.getDetail(1)
+            this.getDetail(2)
         }
     }
 </script>

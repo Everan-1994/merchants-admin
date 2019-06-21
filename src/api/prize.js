@@ -42,20 +42,3 @@ export const prizeDetail = (id) => {
   })
 }
 
-// 签到规则详情
-export const getRuleDetail = (id) => {
-    return axios.request({
-        url: 'others/' + id,
-        method: 'get'
-    })
-}
-
-// 更新签到规则
-export const updateRule = (data, id) => {
-    return axios.request({
-        url: 'others/' + id,
-        data,
-        method: 'put'
-    })
-}
-

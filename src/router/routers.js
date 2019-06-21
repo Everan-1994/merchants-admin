@@ -65,6 +65,85 @@ export default [
         ]
     },
     {
+        path: '/users',
+        name: 'users',
+        meta: {
+            icon: 'md-person',
+            title: '用户管理',
+            // access: Access,
+            access: getAccess([
+                '*',
+                'Get:/admin/user',
+            ]),
+        },
+        component: Main,
+        children: [
+            {
+                path: 'user-list',
+                name: 'user_list',
+                meta: {
+                    access: getAccess(['*', 'Get:/admin/user']),
+                    icon: 'md-contacts',
+                    title: '用户列表',
+                    notCache: true
+                },
+                component: () => import('@/view/user/user-list')
+            },
+            {
+                path: 'user-activity',
+                name: 'user_activity',
+                meta: {
+                    icon: 'md-trending-up',
+                    title: '分析图表',
+                    notCache: true,
+                    access: getAccess(['*']),
+                },
+                component: () => import('@/view/user/user-activity')
+            },
+        ]
+    },
+    {
+        path: '/content',
+        name: 'content',
+        meta: {
+            icon: 'md-aperture',
+            title: '内容管理',
+            // access: Access,
+            access: getAccess([
+                '*',
+                'Delete:/admin/suggest',
+                'Get:/admin/suggest',
+                'Get:/admin/other/{id}',
+                'put:/admin/other/{id}'
+            ]),
+        },
+        component: Main,
+        children: [
+            {
+                path: 'suggest-list',
+                name: 'suggest_list',
+                meta: {
+                    access: getAccess(['*', 'Get:/admin/suggest', 'Delete:/admin/suggest']),
+                    icon: 'md-copy',
+                    title: '反馈列表',
+                    notCache: true
+                },
+                component: () => import('@/view/content/suggest-list')
+            },
+            {
+                path: 'about-us',
+                name: 'about_us',
+                meta: {
+                    icon: 'ios-leaf',
+                    title: '关于我们',
+                    notCache: true,
+                    access: getAccess(['*', 'Get:/admin/other/{id}', 'Put:/admin/other/{id}']),
+                },
+                component: () => import('@/view/content/about-us')
+            },
+        ]
+    },
+    {
         path: '/check_in',
         name: 'check_in',
         meta: {
@@ -116,6 +195,17 @@ export default [
                     access: getAccess(['*', 'Get:/admin/other/{id}']),
                 },
                 component: () => import('@/view/check-in/rule-detail.vue')
+            },
+            {
+                path: 'winning-list',
+                name: 'winning_list',
+                meta: {
+                    access: getAccess(['*', 'Get:/admin/winning', 'Patch:/admin/winning']),
+                    icon: 'ios-cart',
+                    title: '中奖列表',
+                    notCache: true
+                },
+                component: () => import('@/view/check-in/winning-list')
             },
         ]
     },

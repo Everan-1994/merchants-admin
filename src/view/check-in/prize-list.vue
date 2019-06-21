@@ -253,8 +253,5 @@
                 this.$router.push(route)
             }
         },
-        mounted: function () {
-
-        }
     }
 </script>
