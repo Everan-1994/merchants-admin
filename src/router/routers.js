@@ -83,23 +83,12 @@ export default [
                 name: 'user_list',
                 meta: {
                     access: getAccess(['*', 'Get:/admin/user']),
-                    icon: 'md-contacts',
-                    title: '用户列表',
+                    icon: 'md-person',
+                    title: '用户管理',
                     notCache: true
                 },
                 component: () => import('@/view/user/user-list')
-            },
-            {
-                path: 'user-activity',
-                name: 'user_activity',
-                meta: {
-                    icon: 'md-trending-up',
-                    title: '分析图表',
-                    notCache: true,
-                    access: getAccess(['*']),
-                },
-                component: () => import('@/view/user/user-activity')
-            },
+            }
         ]
     },
     {
