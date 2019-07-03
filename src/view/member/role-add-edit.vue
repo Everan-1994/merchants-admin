@@ -24,17 +24,17 @@
 
                 <Divider/>
                 <Row style="text-align: center; background-color: #f0f0f0; height: 35px;; line-height: 35px;">
-                    <Col span="4"><b>操作模块</b></Col>
-                    <Col span="4"><b>全权限</b></Col>
-                    <Col span="16"><b>权限</b></Col>
+                    <Col span="2"><b>操作模块</b></Col>
+                    <Col span="3"><b>全权限</b></Col>
+                    <Col span="19"><b>权限</b></Col>
                 </Row>
 
                 <Row>
               <span v-for="(permission, index) in permissions" :key="index">
-                  <Col span="4" class="columns" style="text-align: center;">
+                  <Col span="2" class="columns" style="text-align: center;">
                       {{permission.name}}
                   </Col>
-                  <Col span="4" class="columns" style="text-align: center;">
+                  <Col span="3" class="columns" style="text-align: center;">
                       <span>
                         <Checkbox @on-change="checkParent(permission.id, $event)"
                                   v-bind:value="editAction.indexOf(permission.id) >= 0? true : false ">
@@ -49,7 +49,7 @@
                         </Checkbox>
                       </span>
                   </Col>
-                  <Col span="16" class="columns">
+                  <Col span="19" class="columns">
                       <span style="display: inline-block" v-for="child in permission.children">
                         <CheckboxGroup v-model="disabledGroup[permission.id]" @on-change="checkChild(child.id, $event)">
 
@@ -136,7 +136,7 @@ export default {
           if (data.errorCode === 0) {
             this.$Message.success('更新成功')
             this.$router.push({
-              path: '/member/role-list'
+              path: '/system/role-list'
             })
           } else {
             this.$Message.error(data.message || '更新失败')
@@ -149,7 +149,7 @@ export default {
           if (data.errorCode === 0) {
             this.$Message.success('添加成功')
             this.$router.push({
-              path: '/member/role-list'
+              path: '/system/role-list'
             })
           } else {
             this.$Message.error(data.message || '添加失败')

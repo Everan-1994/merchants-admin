@@ -108,9 +108,12 @@ export default {
             const data = res.data
             if (data.errorCode === 0) {
               this.$Message.success('添加成功')
-              this.$router.push({
-                path: '/permission/list'
-              })
+                setTimeout(() => {
+                    window.location.reload()
+                }, 1500)
+              // this.$router.push({
+              //   path: '/system/list'
+              // })
               // 重载路由map
               // getPermissionMapData().then(res => {
               //     this.routes = res.data.data.routes

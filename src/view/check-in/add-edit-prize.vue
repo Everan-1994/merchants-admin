@@ -51,7 +51,7 @@
                             :max="100"
                             v-model="formValidate.probability"
                             placeholder="请输入中奖率" style="width: 120px">
-                    </InputNumber>
+                    </InputNumber> %
                 </FormItem>
                 <FormItem label="奖品">
                     <i-switch v-model="formValidate.status" size="large" :true-value="1" :false-value="0">

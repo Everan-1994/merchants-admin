@@ -106,7 +106,6 @@
                             return h('div', [
                                 h('Button', {
                                     props: {
-                                        to: '/check_in/add_edit_prize/' + params.row.id,
                                         type: 'primary',
                                         size: 'small'
                                     },

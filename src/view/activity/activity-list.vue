@@ -321,7 +321,7 @@
             deleteProduct: function () {
                 var _this = this
 
-                const list = _this.$refs.topics.getSelection()
+                const list = _this.$refs.activity.getSelection()
 
                 if (list.length === 0) {
                     this.$Message.error('请勾选要删除的活动')

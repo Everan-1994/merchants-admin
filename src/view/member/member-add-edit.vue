@@ -118,7 +118,7 @@ export default {
               if (data.errorCode === 0) {
                 this.$Message.success('修改成功')
                 this.$router.push({
-                  path: '/member/member-list'
+                  path: '/system/member-list'
                 })
               } else {
                 this.$Message.error(data.message || '修改失败')
@@ -131,7 +131,7 @@ export default {
               if (data.errorCode === 0) {
                 this.$Message.success('添加成功')
                 this.$router.push({
-                  path: '/member/member-list'
+                  path: '/system/member-list'
                 })
               } else {
                 this.$Message.error(data.message || '添加失败')
