@@ -122,8 +122,8 @@
                                     value: params.row.status
                                 },
                                 scopedSlots: {
-                                    open: () => h('span', '正常'),
-                                    close: () => h('span', '冻结')
+                                    open: () => h('span', '启用'),
+                                    close: () => h('span', '禁用')
                                 },
                                 on: {
                                     'on-change': (value) => {
@@ -259,7 +259,7 @@
                 this.detail = {
                     name: data.name,
                     avatar: data.avatar,
-                    status: data.status ? '正常' : '冻结',
+                    status: data.status ? '启用' : '禁用',
                     date: data.created_at,
                     activities: data.activities,
                     try_uses: data.try_uses,

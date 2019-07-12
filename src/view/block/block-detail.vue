@@ -2,6 +2,12 @@
     .ivu-upload-drag {
         height: 100% !important;
     }
+    .tips {
+        top: 100%;
+        left: 0;
+        line-height: 1;
+        padding-top: 6px;
+    }
 </style>
 <template>
     <div>
@@ -31,6 +37,7 @@
                             <p>单击或拖动图片进行上传</p>
                         </div>
                     </Upload>
+                    <div class="tips">建议上传750px*401px的图片</div>
                     <Input v-model="formValidate.front_cover" type="text" style="display: none;"></Input>
                 </FormItem>
                 <FormItem label="标题" prop="title">

@@ -2,6 +2,12 @@
     .ivu-upload-drag {
         height: 100% !important;
     }
+    .tips {
+        top: 100%;
+        left: 0;
+        line-height: 1;
+        padding-top: 6px;
+    }
 </style>
 <template>
     <div>
@@ -32,6 +38,7 @@
                             <p>单击或拖动文件进行上传</p>
                         </div>
                     </Upload>
+                    <div class="tips">建议上传180px*180px的图片</div>
                     <Input v-model="formValidate.prize_image" type="text" style="display: none;"></Input>
                 </FormItem>
                 <FormItem label="名称" prop="prize_name">
@@ -143,7 +150,7 @@
                                         name: 'prize_list'
                                     })
                                 } else {
-                                    that.$Message.info(res.data.message || '保存失败')
+                                    that.$Message.error(res.data.message || '保存失败')
                                 }
                             }).catch(function (err) {
                                 that.$Message.info(err.data.message || '接口获取失败')

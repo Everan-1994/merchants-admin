@@ -43,6 +43,13 @@
         cursor: pointer;
         margin: 0 2px;
     }
+
+    .tips {
+        top: 100%;
+        left: 0;
+        line-height: 1;
+        padding-top: 6px;
+    }
 </style>
 <template>
     <div>
@@ -73,6 +80,7 @@
                             <p>单击或拖动文件进行上传</p>
                         </div>
                     </Upload>
+                    <div class="tips">建议上传686px*295px的图片</div>
                     <Input v-model="formValidate.front_cover" type="text" style="display: none;"></Input>
                 </FormItem>
                 <FormItem label="名称" prop="name">
@@ -126,6 +134,7 @@
                             <Icon type="ios-camera" size="30"></Icon>
                         </div>
                     </Upload>
+                    <div class="tips">建议上传750px*480px的图片</div>
                     <Input v-model="formValidate.uploadListJson" type="text" style="display: none;"></Input>
                     <Modal title="预览" v-model="visible">
                         <img :src="img_url" v-if="visible" style="width: 100%">
@@ -169,6 +178,15 @@
                     callback();
                 }
             };
+            const checkDate3 = (rule, value, callback) => {
+                let startTime = Date.parse(this.formValidate.apply_start_end[1]);
+                let endTime = Date.parse(this.formValidate.activity_start_end[0]);
+                if (startTime > endTime) {
+                    callback(new Error('活动报名时间必须小于活动开始时间'));
+                } else {
+                    callback();
+                }
+            };
             return {
                 upload_url: uploadUrl,
                 headers: {
@@ -208,7 +226,8 @@
                     ],
                     activity_start_end: [
                         {required: true, type: 'array', message: '请选择活动开始和结束的时间', trigger: 'blur'},
-                        {validator: checkDate2, trigger: 'blur'}
+                        {validator: checkDate2, trigger: 'blur'},
+                        {validator: checkDate3, trigger: 'blur'}
                     ],
                     content: [
                         {required: true, message: '请填写商户内容', trigger: 'blur'}

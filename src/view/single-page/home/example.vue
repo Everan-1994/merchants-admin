@@ -24,7 +24,7 @@
             </Col>
         </Row>
         <Divider/>
-        <Row style="text-align: center; margin: 50px 20px;">
+        <Row style="text-align: center; margin: 50px 20px 20px 50px;">
             <Col span="8">
                 <span style="font-size: 20px;">注册用户量</span>
                 <br>
@@ -41,6 +41,9 @@
                 <h2>{{today_register}}</h2>
             </Col>
         </Row>
+        <Row style="margin: 50px 25px;">
+            <Col span="24">用户活跃分析</Col>
+        </Row>
         <Row>
             <Col span="24">
                 <div ref="dom" style="width: 100%;height: 310px;" :loading="loading"></div>
@@ -51,12 +54,12 @@
 
 <script>
     import echarts from 'echarts'
-    import { on, off } from '@/libs/tools'
+    import {on, off} from '@/libs/tools'
     import {getDatas} from '@/api/home'
 
     export default {
         name: 'serviceRequests',
-        data () {
+        data() {
             return {
                 dom: null,
                 fdate: '',
@@ -94,10 +97,10 @@
                     _this.$Message.info(err.data.messages || '接口获取失败')
                 })
             },
-            resize () {
+            resize() {
                 this.dom.resize()
             },
-            init () {
+            init() {
                 let _this = this
                 const option = {
                     tooltip: {
@@ -112,7 +115,7 @@
                     grid: {
                         top: '3%',
                         left: '1.2%',
-                        right: '1%',
+                        right: '2%',
                         bottom: '3%',
                         containLabel: true
                     },
@@ -135,9 +138,11 @@
                             type: 'line',
                             stack: '总量',
                             smooth: true, // 曲线平滑
-                            areaStyle: { normal: {
+                            areaStyle: {
+                                normal: {
                                     color: '#eaf4ff'
-                                } },
+                                }
+                            },
                             data: _this.num
                         },
                     ]
@@ -149,7 +154,7 @@
                 })
             }
         },
-        mounted () {
+        mounted() {
             this.getData()
         },
         watch: {
@@ -165,7 +170,7 @@
                 this.getData()
             }
         },
-        beforeDestroy () {
+        beforeDestroy() {
             off(window, 'resize', this.resize)
         }
     }

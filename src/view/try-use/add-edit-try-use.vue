@@ -43,6 +43,13 @@
         cursor: pointer;
         margin: 0 2px;
     }
+
+    .tips {
+        top: 100%;
+        left: 0;
+        line-height: 1;
+        padding-top: 6px;
+    }
 </style>
 <template>
     <div>
@@ -73,6 +80,7 @@
                             <p>单击或拖动文件进行上传</p>
                         </div>
                     </Upload>
+                    <div class="tips">建议上传690px*404px的图片</div>
                     <Input v-model="formValidate.front_cover" type="text" style="display: none;"></Input>
                 </FormItem>
                 <FormItem label="名称" prop="name">
@@ -130,6 +138,7 @@
                             <Icon type="ios-camera" size="30"></Icon>
                         </div>
                     </Upload>
+                    <div class="tips">建议上传750px*480px的图片</div>
                     <Input v-model="formValidate.uploadListJson" type="text" style="display: none;"></Input>
                     <Modal title="预览" v-model="visible">
                         <img :src="img_url" v-if="visible" style="width: 100%">

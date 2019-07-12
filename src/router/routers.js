@@ -74,6 +74,7 @@ export default [
             access: getAccess([
                 '*',
                 'Get:/admin/user',
+                'Get:/admin/home'
             ]),
         },
         component: Main,
@@ -83,11 +84,22 @@ export default [
                 name: 'user_list',
                 meta: {
                     access: getAccess(['*', 'Get:/admin/user']),
-                    icon: 'md-person',
-                    title: '用户管理',
+                    icon: 'ios-people',
+                    title: '用户列表',
                     notCache: true
                 },
                 component: () => import('@/view/user/user-list')
+            },
+            {
+                path: 'user-avtivity',
+                name: 'user_avtivity',
+                meta: {
+                    access: getAccess(['*', 'Get:/admin/home']),
+                    icon: 'ios-pie',
+                    title: '活跃分析',
+                    notCache: true
+                },
+                component: () => import('@/view/single-page/home')
             }
         ]
     },
@@ -124,7 +136,7 @@ export default [
                 name: 'about_us',
                 meta: {
                     icon: 'ios-leaf',
-                    title: '关于我们',
+                    title: '联系我们',
                     notCache: true,
                     access: getAccess(['*', 'Get:/admin/other/{id}', 'Put:/admin/other/{id}']),
                 },
