@@ -150,6 +150,7 @@ export default [
         meta: {
             icon: 'ios-bookmarks',
             title: '签到管理',
+            notCache: true,
             // access: Access,
             access: getAccess([
                 '*',
@@ -170,6 +171,7 @@ export default [
                     title: route => `${route.params.id >= 0 ? '编辑奖品' : '添加奖品'}`,
                     // access: Access,
                     hideInMenu: true,
+                    notCache: true,
                     access: getAccess(['*', 'Get:/admin/prizes/{id}', 'Put:/admin/prizes']),
                     beforeCloseName: 'before_close_normal'
                 },

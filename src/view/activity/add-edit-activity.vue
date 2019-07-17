@@ -89,7 +89,7 @@
                 <FormItem label="报名" prop="apply_start_end">
                     <DatePicker type="datetimerange" v-model="formValidate.apply_start_end" placeholder="活动报名开始和结束时间" style="width: 300px"></DatePicker>
                 </FormItem>
-                <FormItem label="结束" prop="activity_start_end">
+                <FormItem label="活动" prop="activity_start_end">
                     <DatePicker type="datetimerange" v-model="formValidate.activity_start_end" placeholder="活动开始和结束时间" style="width: 300px"></DatePicker>
                 </FormItem>
                 <FormItem label="上限" prop="limit">
@@ -381,10 +381,10 @@
                 }, 1.5)
             },
             handleProgress(event, file) {
-                this.$Notice.info({
-                    title: '温馨提示',
-                    desc: '图片： ' + file.name + ' 正在上传。'
-                })
+                // this.$Notice.info({
+                //     title: '温馨提示',
+                //     desc: '图片： ' + file.name + ' 正在上传。'
+                // })
             },
             handleBeforeUpload() {
                 const check = this.formValidate.uploadList.length < 5;

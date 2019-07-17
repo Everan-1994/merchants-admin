@@ -206,10 +206,10 @@
                 }, 1.5)
             },
             handleProgress(event, file) {
-                this.$Notice.info({
-                    title: '温馨提示',
-                    desc: '图片： ' + file.name + ' 正在上传。'
-                })
+                // this.$Notice.info({
+                //     title: '温馨提示',
+                //     desc: '图片： ' + file.name + ' 正在上传。'
+                // })
             }
         },
         computed: {

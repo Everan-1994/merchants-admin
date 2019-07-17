@@ -2,6 +2,13 @@
     .ivu-upload-drag {
         height: 100% !important;
     }
+
+    .tips {
+        top: 100%;
+        left: 0;
+        line-height: 1;
+        padding-top: 6px;
+    }
 </style>
 <template>
     <div>
@@ -32,6 +39,7 @@
                             <p>单击或拖动文件进行上传</p>
                         </div>
                     </Upload>
+                    <div class="tips">建议上传686px*364px的图片</div>
                     <Input v-model="formValidate.front_cover" type="text" style="display: none;"></Input>
                 </FormItem>
                 <FormItem label="标题" prop="title">
@@ -175,10 +183,10 @@ export default {
       }, 1.5)
     },
     handleProgress (event, file) {
-      this.$Notice.info({
-        title: '温馨提示',
-        desc: '图片： ' + file.name + ' 正在上传。'
-      })
+      // this.$Notice.info({
+      //   title: '温馨提示',
+      //   desc: '图片： ' + file.name + ' 正在上传。'
+      // })
     }
   },
   computed: {

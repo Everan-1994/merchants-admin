@@ -49,7 +49,7 @@
                             :action="upload_url"
                             :format="['mp4','avi']"
                             :on-format-error="handleFormatError"
-                            :max-size="5120"
+                            :max-size="51200"
                             :on-exceeded-size="handleMaxSize"
                             :on-progress="handleProgress"
                             :on-success="handleSuccess"
@@ -188,14 +188,14 @@
             handleMaxSize(file) {
                 this.$Notice.warning({
                     title: '温馨提示',
-                    desc: '文件： ' + file.name + ' 太大，不能超过 5M。'
+                    desc: '文件： ' + file.name + ' 太大，不能超过 50M。'
                 }, 1.5)
             },
             handleProgress(event, file) {
-                this.$Notice.info({
-                    title: '温馨提示',
-                    desc: '文件： ' + file.name + ' 正在上传。'
-                })
+                // this.$Notice.info({
+                //     title: '温馨提示',
+                //     desc: '文件： ' + file.name + ' 正在上传。'
+                // })
             },
             handleSubmit(name) {
                 var that = this
