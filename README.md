@@ -1,11 +1,13 @@
-# install
+## 以下操作在本地
 
-npm install
+#### 第一步 在 clone 下来的根目录 执行以下命令 install 安装依赖
+```npm install``` 
 
-# build
+#### 第二步
+在项目目录 ```src/config``` 下有个 ```index.js.example``` 文件，把 ```.example``` 后缀去掉
+然后修改里面的接口地址为你的服务器接口地址。
+ 
+#### 第三步 根目录执行以下命令 进行项目编译 
+```npm run build```
 
-npm run build
-
-# run
-
-npm run dev
+build 之后，根目录会有有一个 ```dist``` 目录，把此目录文件上传到你的服务器
