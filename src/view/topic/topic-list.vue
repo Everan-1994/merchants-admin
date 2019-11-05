@@ -2,23 +2,52 @@
     .marginTop {
         margin-top: 20px;
     }
+
+    .mleft {
+        margin-left: 10px;
+    }
 </style>
 <template>
     <div>
         <Card>
-            <Row class="marginTop" style="margin-bottom: 20px">
-                <Col span="24">
-                    <Button type="primary" @click="addBlock" v-if="addAccess" to="/block/add-edit/-1">添加视频模块</Button>
+            <Row class="marginTop" style="margin-bottom: 10px">
+                <Col span="4">
+                    <Button type="primary" @click="addTopic" v-if="addAccess" to="/topic/add-edit/-1">添加话题</Button>
+                </Col>
+                <Col span="20" style="margin-bottom: 15px;">
+                    <span style="">
+                        <Input v-model="title" placeholder="输入视频标题" class="mleft" style="width: 200px"/>
+                        <DatePicker type="daterange" placement="bottom-end" v-model="fdate" placeholder="选择发布时间范围"
+                                    style="width: 200px" class="mleft"></DatePicker>
+                        <Button type="info" icon="ios-search" class="mleft" @click="query">查询</Button>
+                        <Button type="default" icon="md-refresh" class="mleft" @click="resetQuery">重置查询</Button>
+                    </span>
                 </Col>
             </Row>
-            <Table ref="blocks" :columns="columns" :data="list" :loading="loading" @on-selection-change="selctChange">
-                <template slot="expandRow" slot-scope="props">
-                    <div style="padding: 0px 90px" v-html="props.row.description"></div>
-                </template>
-            </Table>
+            <Table ref="topics" :columns="columns" :data="list" :loading="loading"
+                   @on-selection-change="selctChange"></Table>
             <Row class="marginTop">
-                <Col span="24">
-                    <Button type="error" @click="deleteProduct" v-if="viewAccessAll">删除</Button>
+                <Col span="6">
+                    <div style="padding-bottom: 1px; overflow: hidden;">
+                        <Button type="error" @click="deleteProduct" v-if="viewAccessAll">删除</Button>
+                    </div>
+                </Col>
+                <Col span="18" v-show="showPage">
+                    <div style="margin: 10px; padding-bottom: 1px; overflow: hidden;">
+                        <div style="float: right; width: 80%; text-align: right;">
+                            <Page :total="total"
+                                  :current="page"
+                                  :page-size="pageSize"
+                                  @on-change="changePage"
+                                  @on-page-size-change="changePageSize"
+                                  show-sizer
+                                  show-elevator
+                                  show-total
+                                  :page-size-opts="pageSizeOpts"
+                                  :placement="'top'">
+                            </Page>
+                        </div>
+                    </div>
                 </Col>
             </Row>
         </Card>
@@ -26,13 +55,26 @@
 </template>
 <script type="text/ecmascript-6">
 import {hasOneOf} from '@/libs/tools'
-import {blockList, removeBlock} from '@/api/block'
+import {topickList, removeTopic, sortTopicListItem} from '@/api/topic'
 import {getLocalStorage} from '@/libs/util'
+import sortPoptip from '@/view/components/sortPoptip'
 
 export default {
-  name: 'block_list',
+  name: 'topic_list',
+  components: {
+    sortPoptip
+  },
   data () {
     return {
+      total: 0,
+      page: 1,
+      pageSize: 10,
+      pageSizeOpts: [10, 20, 30, 50, 100],
+      order: 'sort',
+      sort: 'desc',
+      showPage: false,
+      title: '',
+      fdate: '',
       loading: true,
       changeAccess: true,
       editAccessL: true,
@@ -43,12 +85,12 @@ export default {
           align: 'center'
         },
         {
-          title: '模块名称',
-          key: 'name',
+          title: '话题标题',
+          key: 'title',
           render: (h, params) => {
             if ((new Date().getTime() - new Date(params.row.createdAt).getTime()) <= 300000) {
               return h('span', [
-                params.row.name,
+                params.row.title,
                 h('tag', {
                   style: {
                     marginLeft: '10px',
@@ -62,30 +104,19 @@ export default {
               ])
             } else {
               return h('span', [
-                params.row.name
+                params.row.title
               ])
             }
           }
         },
         {
-          title: '观看人数',
-          key: 'watch_times',
-          align: 'center',
-          width: 180,
-          render: (h, params) => {
-            return h('span', [
-              params.row.watch_times
-            ])
-          }
-        },
-        {
           title: '发布时间',
-          key: 'createAt',
+          key: 'created_at',
           align: 'center',
           width: 180,
           render: (h, params) => {
             return h('span', [
-              params.row.createdAt
+              params.row.created_at
             ])
           }
         },
@@ -98,7 +129,7 @@ export default {
             return h('div', [
               h('Button', {
                 props: {
-                  to: '/block/add-edit/' + params.row.id,
+                  to: '/topic/add-edit/' + params.row.id,
                   type: 'primary',
                   size: 'small'
                 },
@@ -108,36 +139,59 @@ export default {
                 },
                 on: {
                   click: () => {
-                    this.editBlock(params.row.id)
+                    this.editTopic(params.row.id)
                   }
                 }
               }, '编辑'),
               h('Button', {
                 props: {
-                  to: '/block/list/' + params.row.id,
+                  to: '/topic/comment/' + params.row.id,
                   type: 'primary',
                   size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
                 },
                 on: {
                   click: () => {
                     this.ManagementBlock(params.row.id)
                   }
                 }
-              }, '视频列表管理')
+              }, '评论详情'),
+              h(sortPoptip, {
+                props: {
+                  sortObj: {
+                    current: {
+                      'id': params.row.id,
+                      'sort': params.row.sort
+                    }
+                  },
+                  sortFunc: sortTopicListItem
+                },
+                style: {
+                  display: this.sortAccessL ? 'inline-block' : 'none'
+                },
+                on: {
+                  sortUpdated: () => {
+                    this.setTopicList()
+                  }
+                }
+              }, '排序')
             ])
           }
         }
       ],
       list: [],
       isShow: false,
-      selectArr: []
+      selectArr: [],
+      sortAccessL: true
     }
   },
   computed: {
     // 删除权限限制
     viewAccessAll () {
       this.changeAccess = getLocalStorage('access').split(',')
-      const item = ['Delete:/admin/block']
+      const item = ['Delete:/admin/topic']
       const arr = ['*']
       if (this.changeAccess.toString() === arr.toString()) {
         return true
@@ -151,7 +205,7 @@ export default {
     // 添加权限限制
     addAccess () {
       const addAccess = getLocalStorage('access').split(',')
-      const item = ['Post:/admin/block']
+      const item = ['Post:/admin/topic']
       const arr = ['*']
       if (addAccess.toString() === arr.toString()) {
         return true
@@ -162,13 +216,13 @@ export default {
 
   },
   created () {
-    this.setBlockList()
+    this.setTopicList()
     this.editAccess()
   },
   methods: {
     editAccess () {
       const addAccess = getLocalStorage('access').split(',')
-      const item = ['Put:/admin/block/{id:[0-9]+}']
+      const item = ['Put:/admin/try_use/{id:[0-9]+}']
       const arr = ['*']
       if (addAccess.toString() === arr.toString()) {
         return true
@@ -177,11 +231,22 @@ export default {
         return hasOneOf(item, addAccess)
       }
     },
-    setBlockList: function () {
+    setTopicList: function () {
       var _this = this
-      blockList().then(function (res) {
+      const params = {
+        title: _this.title,
+        page: _this.page,
+        pageSize: _this.pageSize,
+        startTime: _this.fdate && _this.fdate[0] ? Date.parse(_this.fdate[0]) / 1000 : 0,
+        endTime: _this.fdate && _this.fdate[1] ? Date.parse(_this.fdate[1]) / 1000 : 0
+      }
+
+      topickList(params).then(function (res) {
         if (res.data.errorCode === 0) {
-          _this.list = res.data.data
+          const data = res.data.data
+          _this.list = data.data
+          _this.total = data.total
+          _this.showPage = data.total > _this.pageSize
           _this.loading = false
         } else {
           _this.$Message.info(res.data.messages || '数据渲染失败')
@@ -200,10 +265,10 @@ export default {
     deleteProduct: function () {
       var _this = this
 
-      const list = _this.$refs.blocks.getSelection()
+      const list = _this.$refs.topics.getSelection()
 
       if (list.length === 0) {
-        this.$Message.error('请勾选要删除的视频模块')
+        this.$Message.error('请勾选要删除的话题')
         return false
       }
 
@@ -213,7 +278,7 @@ export default {
         onOk: () => {
           const ids = {}
           ids.ids = _this.selectArr
-          removeBlock(ids).then(function (res) {
+          removeTopic(ids).then(function (res) {
             if (res.data.errorCode === 0) {
               let arr = _this.list.filter(item => !_this.selectArr.some(ele => ele === item.id))
               _this.list = arr
@@ -233,29 +298,29 @@ export default {
     },
     ManagementBlock: function (id) {
       const route = {
-        name: 'block_detail_list',
+        name: 'comment_detail_list',
         params: {
           id
         },
         meta: {
-          title: `区块内容管理`
+          title: `话题评论管理`
         }
       }
       this.$router.push(route)
     },
-    editBlock: function (id) {
+    editTopic: function (id) {
       const route = {
         name: 'add_block',
         params: {
           id
         },
         meta: {
-          title: `${id >= 0 ? '编辑区块列表' : '添加区块'}`
+          title: `${id >= 0 ? '编辑话题' : '添加话题'}`
         }
       }
       this.$router.push(route)
     },
-    addBlock: function () {
+    addTopic: function () {
       let id = -1
       const route = {
         name: 'add_block',
@@ -263,14 +328,33 @@ export default {
           id
         },
         meta: {
-          title: `${id >= 0 ? '编辑区块列表' : '添加区块'}`
+          title: `${id >= 0 ? '编辑话题' : '添加话题'}`
         }
       }
       this.$router.push(route)
+    },
+    changePage (value) {
+      this.loading = true
+      this.page = value
+      this.setTopicList()
+    },
+    changePageSize (value) {
+      this.loading = true
+      this.pageSize = value
+      this.setTopicList()
+    },
+    query () {
+      this.loading = true
+      this.page = 1
+      this.setTopicList()
+    },
+    resetQuery () {
+      this.loading = true
+      this.page = 1
+      this.title = ''
+      this.fdate = ''
+      this.setTopicList()
     }
-  },
-  mounted: function () {
-
   }
 }
 </script>

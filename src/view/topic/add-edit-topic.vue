@@ -13,13 +13,10 @@
 <template>
     <div>
         <Card>
-            <h4>{{block_title}}</h4>
+            <h4>{{topic_title}}</h4>
             <Divider/>
 
             <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="60">
-                <FormItem label="名称" prop="name">
-                    <Input v-model="formValidate.name" placeholder="请输入名称"></Input>
-                </FormItem>
                 <FormItem label="封面图" prop="front_cover">
                     <Upload type="drag"
                             name="file"
@@ -34,7 +31,7 @@
                             :show-upload-list="false"
                             :headers="headers"
                             style="width: 300px; height: 160px;">
-                        <img v-if="formValidate.front_cover" :src="formValidate.front_cover" alt="视频"
+                        <img v-if="formValidate.front_cover" :src="formValidate.front_cover" alt="封面图"
                              style="width: 100%; overflow: hidden"
                              ref="front_cover">
                         <div v-else style="padding: 20px 0">
@@ -42,12 +39,19 @@
                             <p>单击或拖动文件进行上传</p>
                         </div>
                     </Upload>
-                    <div class="tips">建议上传335px*190px的图片</div>
+                    <div class="tips">建议上传686px*364px的图片</div>
                     <Input v-model="formValidate.front_cover" type="text" style="display: none;"></Input>
                 </FormItem>
+                <FormItem label="标题" prop="title">
+                    <Input v-model="formValidate.title" placeholder="请输入话题标题"></Input>
+                </FormItem>
+                <FormItem label="内容" prop="content">
+                    <Input v-model="formValidate.content" type="textarea" :autosize="{minRows: 5, maxRows: 15}"
+                           placeholder="内容"></Input>
+                </FormItem>
                 <FormItem style="margin-top: 5%;">
-                    <Button type="success" @click="submitBlockDetail('formValidate')">保存</Button>
-                    <Button type="text" to="/block/list">返回视频模块列表</Button>
+                    <Button type="success" @click="submitTopicDetail('formValidate')">保存</Button>
+                    <Button type="text" to="/topic/list">返回话题列表</Button>
                 </FormItem>
             </Form>
         </Card>
@@ -55,12 +59,12 @@
 </template>
 <script type="text/ecmascript-6">
 
-import {addBlock, editBlock, blockListDetail} from '@/api/block'
+import {addTopic, editTopic, topicListDetail} from '@/api/topic'
 import uploadUrl from '@/libs/uploadUrl'
 import {getToken} from '@/libs/util'
 
 export default {
-  name: 'add_block',
+  name: 'add_edit_block',
   data () {
     return {
       upload_url: uploadUrl,
@@ -68,36 +72,38 @@ export default {
         'Authorization': getToken()
       },
       formValidate: {
-        name: '',
+        title: '',
         front_cover: '',
-        status: 1,
+        content: '',
         sort: 0
       },
       ruleValidate: {
-        name: [
-          {required: true, message: '请输入名称', trigger: 'blur'}
+        title: [
+          {required: true, message: '请输入话题标题', trigger: 'blur'}
         ],
         front_cover: [
           {required: true, message: '请上传封面图', trigger: 'blur'}
+        ],
+        content: [
+          {required: true, message: '请填写话题内容', trigger: 'blur'}
         ]
       }
     }
   },
   created () {
-    this.block_title = this.$route.params.id >= 0 ? '编辑视频模块内容' : '添加视频模块内容'
-    this.setBlockDetail()
-  },
-  mounted () {
+    this.topic_title = this.$route.params.id >= 0 ? '编辑话题内容' : '添加话题内容'
+    this.setTopicDetail()
   },
   methods: {
-    setBlockDetail: function () {
+    setTopicDetail: function () {
       let id = this.$route.params.id
       var that = this
       if (id >= 0) {
-        blockListDetail(id).then(function (res) {
+        topicListDetail(id).then(function (res) {
           if (res.data.errorCode === 0) {
-            that.formValidate.name = res.data.data.name
+            that.formValidate.title = res.data.data.title
             that.formValidate.front_cover = res.data.data.front_cover
+            that.formValidate.content = res.data.data.content
           } else {
             that.$Message.info('数据渲染失败')
           }
@@ -105,20 +111,20 @@ export default {
           that.$Message.info('接口获取失败')
         })
       } else {
-        that.formValidate.name = ''
+        that.formValidate.title = ''
       }
     },
-    submitBlockDetail (name) {
+    submitTopicDetail (name) {
       let id = this.$route.params.id
       var that = this
       this.$refs[name].validate((valid) => {
         if (valid) {
           if (id >= 0) {
-            editBlock(this.formValidate, id).then(function (res) {
+            editTopic(this.formValidate, id).then(function (res) {
               if (res.data.errorCode == 0) {
                 that.$Message.info('保存成功')
                 that.$router.push({
-                  name: 'block_list'
+                  name: 'topic_list'
                 })
               } else {
                 that.$Message.info(res.data.message || '保存失败')
@@ -127,11 +133,11 @@ export default {
               that.$Message.info(err.data.message || '接口获取失败')
             })
           } else {
-            addBlock(this.formValidate).then(function (res) {
+            addTopic(this.formValidate).then(function (res) {
               if (res.data.errorCode == 0) {
                 that.$Message.info('保存成功')
                 that.$router.push({
-                  name: 'block_list'
+                  name: 'topic_list'
                 })
               } else {
                 that.$Message.info(res.data.message || '保存失败')
@@ -193,10 +199,11 @@ export default {
       handler (val, oldVal) {
         var that = this
         if (val >= 0) {
-          blockListDetail(val).then(function (res) {
+          topicListDetail(val).then(function (res) {
             if (res.data.errorCode === 0) {
               that.formValidate.name = res.data.data.name
               that.formValidate.front_cover = res.data.data.front_cover
+              that.formValidate.content = res.data.data.content
             } else {
               that.$Message.info('数据渲染失败')
             }
@@ -206,6 +213,7 @@ export default {
         } else {
           that.formValidate.name = ''
           that.formValidate.front_cover = ''
+          that.formValidate.content = ''
         }
       },
       deep: false

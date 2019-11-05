@@ -5,12 +5,12 @@ import {Modal} from 'iview'
 
 // import { Spin } from 'iview'
 class HttpRequest {
-  constructor(baseUrl = baseURL) {
+  constructor (baseUrl = baseURL) {
     this.baseUrl = baseUrl
     this.queue = {}
   }
 
-  getInsideConfig() {
+  getInsideConfig () {
     const config = {
       baseURL: this.baseUrl,
       headers: {
@@ -20,14 +20,14 @@ class HttpRequest {
     return config
   }
 
-  destroy(url) {
+  destroy (url) {
     delete this.queue[url]
     if (!Object.keys(this.queue).length) {
       // Spin.hide()
     }
   }
 
-  interceptors(instance, url) {
+  interceptors (instance, url) {
     // 请求拦截
     instance.interceptors.request.use(config => {
       // 头部携带 token
@@ -53,13 +53,13 @@ class HttpRequest {
         // 如果 header 中存在 token，那么就替换本地的 token
         setToken(token)
       }
-      if (res.data.errorCode == 400) {
+      if (res.data.errorCode == 401) {
         Modal.confirm({
           title: '提示',
           content: '身份已过期，请重新登录',
           onOk: () => {
-            delToken() //删除token
-            //跳转登录
+            delToken() // 删除token
+            // 跳转登录
             router.replace({
               path: '/login'
             })
@@ -67,25 +67,24 @@ class HttpRequest {
           onCancel: () => {
             return false
           }
-        });
+        })
       }
 
       this.destroy(url)
       const {data, status} = res
       return {data, status}
-
     }, error => {
       this.destroy(url)
       return Promise.reject(error)
     })
   }
 
-  request(options) {
+  request (options) {
     const instance = axios.create()
     options = Object.assign(this.getInsideConfig(), options)
     this.interceptors(instance, options.url)
-    let result = instance(options);
-    return result;
+    let result = instance(options)
+    return result
   }
 }
 
